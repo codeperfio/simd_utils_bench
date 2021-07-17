@@ -37,12 +37,14 @@ static inline void minmax32f(float *src, int len, float *min_value,
 static void generate_arguments_pairs(benchmark::internal::Benchmark *b) {
   for (int64_t vecsize = min_vec_size; vecsize <= max_vec_size;
        vecsize *= step_compression_unit) {
-    b = b->ArgPair((double)0, vecsize);
+    b = b->Args({
+        vecsize,
+    });
   }
 }
 
 static void BM_minmax32f(benchmark::State &state) {
-  const int64_t stream_size = state.range(1);
+  const int64_t stream_size = state.range(0);
   std::vector<float> input;
   input.resize(stream_size, 0);
   std::mt19937_64 rng;
@@ -66,7 +68,7 @@ static void BM_minmax32f(benchmark::State &state) {
 }
 
 static void BM_minmax128f(benchmark::State &state) {
-  const int64_t stream_size = state.range(1);
+  const int64_t stream_size = state.range(0);
   std::vector<float> input;
   input.resize(stream_size, 0);
   std::mt19937_64 rng;
@@ -90,7 +92,7 @@ static void BM_minmax128f(benchmark::State &state) {
 
 #ifdef AVX
 static void BM_minmax256f(benchmark::State &state) {
-  const int64_t stream_size = state.range(1);
+  const int64_t stream_size = state.range(0);
   std::vector<float> input;
   input.resize(stream_size, 0);
   std::mt19937_64 rng;
@@ -116,7 +118,7 @@ static void BM_minmax256f(benchmark::State &state) {
 #ifdef AVX512
 
 static void BM_minmax512f(benchmark::State &state) {
-  const int64_t stream_size = state.range(1);
+  const int64_t stream_size = state.range(0);
   std::vector<float> input;
   input.resize(stream_size, 0);
   std::mt19937_64 rng;
