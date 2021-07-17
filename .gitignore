@@ -1,3 +1,9 @@
+# IDEs
+.vscode
+
+# build 
+build/
+
 # Prerequisites
 *.d
 
