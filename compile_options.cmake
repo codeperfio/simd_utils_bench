@@ -1,26 +1,24 @@
 # Disable frame pointer optimizations so profilers can get better call stacks
 add_compile_options(-fno-omit-frame-pointer)
 
-
 if(CLR_CMAKE_PLATFORM_UNIX)
   # this allows pretty-printers in gdb to work with clang
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG")
 
   add_compile_options(-Wno-unknown-warning-option)
   add_definitions(-DFMA)
   add_definitions(-DSSE)
-  add_compile_options(-msse4.2)
-  
+  # add_compile_options(-msse4.2)
+
   add_compile_options(-flax-vector-conversions)
 
   if(C_AVX_FOUND)
-  add_definitions(-DAVX)
-  add_compile_options(-mavx2)
+    add_definitions(-DAVX)
+    add_compile_options(-mavx2)
   endif()
 
   if(C_AVX512_FOUND)
-  add_definitions(-DAVX512)
-  add_compile_options(-march=skylake-avx512)
+    add_definitions(-DAVX512)
+    add_compile_options(-march=skylake-avx512)
   endif()
 
 endif(CLR_CMAKE_PLATFORM_UNIX)

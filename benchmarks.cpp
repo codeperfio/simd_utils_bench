@@ -12,6 +12,28 @@ int64_t min_vec_size = 128;
 int64_t max_vec_size = (128 * 1024) / 4;
 int64_t step_compression_unit = 2;
 
+// Clang doesn't like the 'X' constraint on `value` and certain GCC versions
+// don't like the 'g' constraint. Attempt to placate them both.
+#if defined(__clang__)
+#define DO_NOT_OPTIMIZE(x) asm volatile("" : : "g"(value) : "memory")
+#else
+#define DO_NOT_OPTIMIZE(x) asm volatile("" : : "X"(value) : "memory")
+#endif
+
+static inline void minmax32f(float *src, int len, float *min_value,
+                             float *max_value) {
+  float min = FLT_MAX;
+  float max = FLT_MIN;
+  for (size_t i = 0; i < len; i++) {
+    if (src[i] < min)
+      min = src[i];
+    if (src[i] > min)
+      max = src[i];
+  }
+  *max_value = max;
+  *min_value = min;
+}
+
 static void generate_arguments_pairs(benchmark::internal::Benchmark *b) {
   for (int64_t vecsize = min_vec_size; vecsize <= max_vec_size;
        vecsize *= step_compression_unit) {
@@ -32,16 +54,13 @@ static void BM_minmax32f(benchmark::State &state) {
   }
 
   while (state.KeepRunning()) {
-    float min = FLT_MAX;
-    float max = FLT_MIN;
-    for (size_t i = 0; i < stream_size; i++) {
-      if (input[i] < min)
-        min = input[i];
-      if (input[i] > min)
-        max = input[i];
-    }
-    // read/write barrier
-    benchmark::ClobberMemory();
+    std::vector<int> v;
+    v.reserve(1);
+    float min, max;
+    minmax32f(&input[0], stream_size, &min, &max);
+    v.push_back(min);
+    benchmark::ClobberMemory(); // Force min to be written to memory.
+
     state.SetItemsProcessed(stream_size);
   }
 }
@@ -59,10 +78,12 @@ static void BM_minmax128f(benchmark::State &state) {
   }
 
   while (state.KeepRunning()) {
+    std::vector<int> v;
     float min, max;
+    v.reserve(1);
     minmax128f(&input[0], stream_size, &min, &max);
-    // read/write barrier
-    benchmark::ClobberMemory();
+    v.push_back(min);
+    benchmark::ClobberMemory(); // Force min to be written to memory.
     state.SetItemsProcessed(stream_size);
   }
 }
@@ -81,10 +102,12 @@ static void BM_minmax256f(benchmark::State &state) {
   }
 
   while (state.KeepRunning()) {
+    std::vector<int> v;
+    v.reserve(1);
     float min, max;
     minmax256f(&input[0], stream_size, &min, &max);
-    // read/write barrier
-    benchmark::ClobberMemory();
+    v.push_back(min);
+    benchmark::ClobberMemory(); // Force min to be written to memory.
     state.SetItemsProcessed(stream_size);
   }
 }
@@ -105,10 +128,12 @@ static void BM_minmax512f(benchmark::State &state) {
   }
 
   while (state.KeepRunning()) {
+    std::vector<int> v;
+    v.reserve(1);
     float min, max;
     minmax512f(&input[0], stream_size, &min, &max);
-    // read/write barrier
-    benchmark::ClobberMemory();
+    v.push_back(min);
+    benchmark::ClobberMemory(); // Force min to be written to memory.
     state.SetItemsProcessed(stream_size);
   }
 }
