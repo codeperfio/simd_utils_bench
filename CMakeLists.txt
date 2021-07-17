@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.12.2)
 project(simd_utils_bench)
 set(CMAKE_C_STANDARD 11)
-
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+find_package(AVX REQUIRED)
 include(detect_platform.cmake)
 include(compile_options.cmake) 
 
