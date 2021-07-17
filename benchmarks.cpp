@@ -12,15 +12,7 @@ int64_t min_vec_size = 128;
 int64_t max_vec_size = (128 * 1024) / 4;
 int64_t step_compression_unit = 2;
 
-// Clang doesn't like the 'X' constraint on `value` and certain GCC versions
-// don't like the 'g' constraint. Attempt to placate them both.
-#if defined(__clang__)
-#define DO_NOT_OPTIMIZE(x) asm volatile("" : : "g"(value) : "memory")
-#else
-#define DO_NOT_OPTIMIZE(x) asm volatile("" : : "X"(value) : "memory")
-#endif
-
-static inline void minmax32f(float *src, int len, float *min_value,
+static inline void minmax32f(float *src, const size_t len, float *min_value,
                              float *max_value) {
   float min = FLT_MAX;
   float max = FLT_MIN;
