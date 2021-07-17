@@ -63,3 +63,7 @@ ENDMACRO()
 CHECK_SSE(C "AVX" " ;-mavx")
 CHECK_SSE(C "AVX2" " ;-mavx2")
 CHECK_SSE(C "AVX512" " ;-march=skylake-avx512")
+
+message(STATUS "Auto detected AVX: ${C_AVX_FOUND}.")
+message(STATUS "Auto detected AVX2: ${C_AVX2_FOUND}.")
+message(STATUS "Auto detected AVX512: ${C_AVX512_FOUND}.")
