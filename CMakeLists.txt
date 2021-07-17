@@ -11,10 +11,7 @@ set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "Suppressing benchmark's tests" FORC
 set(BENCHMARK_ENABLE_GTEST_TESTS OFF CACHE BOOL "Suppressing benchmark's tests" FORCE)
 
 add_subdirectory(deps/benchmark)
-add_subdirectory(deps/cpu_features)
 include_directories(deps/benchmark/include)
-
-
 
 add_executable(simd_utils_bench benchmarks.cpp)
 target_link_libraries(simd_utils_bench benchmark::benchmark)
