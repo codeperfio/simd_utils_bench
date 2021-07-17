@@ -68,10 +68,6 @@ static void BM_minmax128f(benchmark::State &state) {
 }
 
 #ifdef AVX
-#ifndef _mm256_set_m128d
-#define _mm256_set_m128d(vh, vl) \
-        _mm256_insertf128_pd(_mm256_castpd128_pd256(vl), (vh), 1)
-#endif
 static void BM_minmax256f(benchmark::State &state) {
   const int64_t stream_size = state.range(1);
   std::vector<float> input;
