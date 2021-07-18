@@ -1,0 +1,9 @@
+[submodule "deps/simd_utils"]
+	path = deps/simd_utils
+	url = https://github.com/JishinMaster/simd_utils.git
+[submodule "deps/benchmark"]
+	path = deps/benchmark
+	url = https://github.com/google/benchmark.git
+[submodule "deps/cpu_features"]
+	path = deps/cpu_features
+	url = https://github.com/google/cpu_features.git
